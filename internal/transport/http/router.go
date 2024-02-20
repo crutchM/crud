@@ -1,13 +1,17 @@
 package http
 
-import "github.com/gin-gonic/gin"
+import (
+	"crud/internal/core/interface/service"
+	"crud/internal/transport/handler"
+	"github.com/gin-gonic/gin"
+)
 
-func InitRoutes() *gin.Engine {
+func InitRoutes(service service.AuthService) *gin.Engine {
 	router := gin.New()
 
-	router.POST("/register")
+	router.POST("/register", handler.RegisterUser(service))
 
-	router.POST("/auth")
+	router.POST("/auth/:id")
 
 	router.GET("/check")
 
