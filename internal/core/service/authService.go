@@ -1,6 +1,7 @@
 package service
 
 import (
+	"context"
 	"crud/internal/core/interface/repository"
 	"crud/internal/core/interface/service"
 	"crud/internal/core/model"
@@ -12,7 +13,7 @@ import (
 	"time"
 )
 
-type tokenClaims struct {
+type TokenClaims struct {
 	jwt.StandardClaims
 	Login string `json:"login"`
 }
@@ -25,12 +26,12 @@ func NewAuthService(repo repository.AuthRepository) service.AuthService {
 	return _authService{repo: repo}
 }
 
-func (service _authService) Register(login,
+func (service _authService) Register(ctx context.Context, login,
 	password string) (string, error) {
 
 	hash := generatePassword(password)
 
-	userName, err := service.Register(login, hash)
+	userName, err := service.repo.Register(ctx, login, hash)
 
 	if err != nil {
 		slog.Error(err.Error())
@@ -41,7 +42,7 @@ func (service _authService) Register(login,
 
 }
 
-func (service _authService) GenerateToken(login,
+func (service _authService) GenerateToken(ctx context.Context, login,
 	password string) (string, error) {
 	return "", nil
 }
@@ -54,7 +55,7 @@ func generatePassword(password string) string {
 }
 
 func generateToken(login string) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &tokenClaims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, &TokenClaims{
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(model.TokenTTL).Unix(),
 			IssuedAt:  time.Now().Unix(),

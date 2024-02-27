@@ -22,7 +22,7 @@ func RegisterUser(service service.AuthService) gin.HandlerFunc {
 			return
 		}
 
-		token, err := service.Register(user.Login, user.Password)
+		token, err := service.Register(c.Request.Context(), user.Login, user.Password)
 
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusBadRequest,

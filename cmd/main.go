@@ -25,9 +25,11 @@ func main() {
 
 	serv := service.NewAuthService(manager.AuthRepository)
 
-	router := http.InitRoutes(serv)
+	postServ := service.NewPostService(manager.PostRepository)
 
-	if err := http2.ListenAndServe(":8080", router); err != nil {
+	router := http.InitRoutes(serv, postServ)
+
+	if err := http2.ListenAndServe(":2222", router); err != nil {
 		log.Fatal(err)
 	}
 }

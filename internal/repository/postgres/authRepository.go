@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"crud/internal/core/interface/repository"
 	"crud/internal/lib/db"
 	"fmt"
@@ -19,10 +20,10 @@ func NewRepo(db *db.Db) repository.AuthRepository {
 	return _authRepo{db}
 }
 
-func (repo _authRepo) GetUser(login, hashPassword string) (string, error) {
+func (repo _authRepo) GetUser(ctx context.Context, login, hashPassword string) (string, error) {
 	var user userDB
 
-	row := repo.PgConn.QueryRow(nil, `SELECT * FROM user WHERE login=$1, password=$2`, login, hashPassword)
+	row := repo.PgConn.QueryRow(ctx, `SELECT * FROM public.user WHERE login=$1 AND pas=$2`, login, hashPassword)
 
 	if err := row.Scan(&user); err != nil {
 		return "", fmt.Errorf("не смогли получить юзера: %x", err)
@@ -32,11 +33,10 @@ func (repo _authRepo) GetUser(login, hashPassword string) (string, error) {
 
 }
 
-func (repo _authRepo) Register(login, hashPassword string) (string, error) {
-
+func (repo _authRepo) Register(ctx context.Context, login, hashPassword string) (string, error) {
 	_, err := repo.PgConn.Exec(
-		nil,
-		`INSERT INTO user(login, password) values ($1, $2)`,
+		ctx,
+		`INSERT INTO public.user(login, pass) values ($1, $2)`,
 		login, hashPassword,
 	)
 

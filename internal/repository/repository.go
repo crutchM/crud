@@ -8,10 +8,12 @@ import (
 
 type RepositoryManager struct {
 	repository.AuthRepository
+	repository.PostRepository
 }
 
 func NewRepositoryManager(db *db.Db) RepositoryManager {
 	return RepositoryManager{
 		postgres.NewRepo(db),
+		postgres.NewPostRepo(db),
 	}
 }
