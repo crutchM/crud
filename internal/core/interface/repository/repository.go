@@ -14,3 +14,7 @@ type PostRepository interface {
 	CreatePost(ctx context.Context, post model.Post) (int, error)
 	GetPost(ctx context.Context, postId int) (model.Post, error)
 }
+
+type EventRepository interface {
+	SendEvent(ctx context.Context, event model.Event) error
+}

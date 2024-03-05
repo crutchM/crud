@@ -21,11 +21,11 @@ func main() {
 
 	database := db.New(withTimeout)
 
-	manager := repository.NewRepositoryManager(database)
+	manager := repository.NewRepositoryManager(database, "10.80.0.139:29092")
 
 	serv := service.NewAuthService(manager.AuthRepository)
 
-	postServ := service.NewPostService(manager.PostRepository)
+	postServ := service.NewPostService(manager.PostRepository, manager.EventRepository)
 
 	router := http.InitRoutes(serv, postServ)
 
